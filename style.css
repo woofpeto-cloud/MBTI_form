@@ -1,0 +1,275 @@
+:root {
+  --bg: linear-gradient(160deg, #fff3e5 0%, #ffe7f3 45%, #e4f7ff 100%);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --text: #2e294e;
+  --muted: #6d6a84;
+  --accent: #ff6b9d;
+  --accent-2: #7e7bff;
+  --success: #00b894;
+  --shadow: 0 18px 40px rgba(67, 39, 103, 0.16);
+  --radius: 24px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 14px 40px;
+}
+
+.card {
+  width: min(560px, 100%);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.progress-wrap {
+  margin-bottom: 12px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #f0ecff;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.4s ease;
+}
+
+.fade-in {
+  animation: fadeIn 0.35s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(1.45rem, 2vw + 1rem, 2rem);
+  line-height: 1.15;
+  margin: 8px 0 6px;
+}
+
+.subtitle {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.answers {
+  display: grid;
+  gap: 12px;
+}
+
+.answer-btn,
+.primary-btn,
+.secondary-btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+.answer-btn {
+  text-align: left;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid #ece7ff;
+  box-shadow: 0 8px 16px rgba(95, 67, 148, 0.08);
+}
+
+.answer-btn:hover,
+.answer-btn:focus-visible,
+.primary-btn:hover,
+.secondary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(95, 67, 148, 0.14);
+}
+
+.answer-label {
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.primary-btn {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: white;
+}
+
+.secondary-btn {
+  background: #fff;
+  border: 1px solid #ddd9f8;
+  color: var(--text);
+}
+
+.result-header {
+  text-align: center;
+}
+
+.type-code {
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  margin: 4px 0;
+}
+
+.type-name {
+  font-size: 1.15rem;
+  margin-top: 0;
+}
+
+.desc {
+  line-height: 1.5;
+  color: #4b4668;
+  margin: 10px 0 14px;
+}
+
+.traits {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  color: #4b4668;
+}
+
+.cta-box {
+  margin-top: 20px;
+  background: #fff7fd;
+  border: 1px solid #ffd2e8;
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+}
+
+.match-score {
+  text-align: center;
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(2.1rem, 5vw, 2.8rem);
+  margin: 8px 0;
+}
+
+.match-score.bounce {
+  animation: scoreBounce 0.7s cubic-bezier(0.3, 1.5, 0.4, 1);
+}
+
+@keyframes scoreBounce {
+  0% { transform: scale(0.8); }
+  40% { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
+
+.result-card {
+  margin-top: 18px;
+  border-radius: 24px;
+  padding: 18px;
+  text-align: center;
+  background: linear-gradient(155deg, #ffd6a4, #ffc2dd 42%, #badcff);
+  box-shadow: 0 15px 30px rgba(64, 26, 87, 0.2);
+}
+
+.result-card h4 {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #604366;
+}
+
+.result-card .card-type {
+  font-family: "Baloo 2", cursive;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.result-card p {
+  margin: 6px 0;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mini-copy {
+  text-align: center;
+  color: #7a728f;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.confetti-layer {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  top: -16px;
+  width: 10px;
+  height: 14px;
+  opacity: 0.9;
+  animation: confettiFall 1.7s linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translate3d(var(--x, 0), 100vh, 0) rotate(600deg);
+    opacity: 0;
+  }
+}
+
+@media (min-width: 680px) {
+  .card {
+    padding: 24px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
