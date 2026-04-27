@@ -297,7 +297,7 @@ function closeShareModal() {
 
 async function copyCaption() {
   const copied = await copyShareText(getShareText());
-  shareStatus.textContent = copied ? "文案已复制，可直接粘贴到社媒。" : "复制失败，请手动复制。";
+  shareStatus.textContent = copied ? "Caption copied. Paste it into your social post." : "Copy failed. Please copy manually.";
 }
 
 async function copyShareText(text = getShareText()) {
@@ -314,27 +314,27 @@ function openSocial(platform) {
 
   if (platform === "facebook") {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}&quote=${text}`, "_blank", "noopener,noreferrer");
-    shareStatus.textContent = "Facebook 网页分享已打开。";
+    shareStatus.textContent = "Facebook web share opened.";
     return;
   }
 
   if (platform === "twitter") {
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${pageUrl}`, "_blank", "noopener,noreferrer");
-    shareStatus.textContent = "Twitter/X 网页分享已打开。";
+    shareStatus.textContent = "Twitter/X web share opened.";
     return;
   }
 
   if (platform === "instagram") {
     window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
     copyShareText().then(() => {
-      shareStatus.textContent = "已跳转 Instagram，并复制文案。请选择 Story/动态并上传图片。";
+      shareStatus.textContent = "Instagram opened and caption copied. Choose Story/Post and upload your image.";
     });
     return;
   }
 
   window.open("https://www.tiktok.com/", "_blank", "noopener,noreferrer");
   copyShareText().then(() => {
-    shareStatus.textContent = "已跳转 TikTok，并复制文案。请发布时粘贴文案并上传图片。";
+    shareStatus.textContent = "TikTok opened and caption copied. Paste the caption and upload your image.";
   });
 }
 
@@ -347,14 +347,14 @@ async function downloadCard() {
 
   const canvas = await window.html2canvas(card, {
     scale: 2,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fff3e5",
     onclone: (doc) => {
       const clonedCard = doc.getElementById("resultCard");
       if (!clonedCard) return;
       clonedCard.classList.remove("fade-in");
       clonedCard.style.opacity = "1";
       clonedCard.style.transform = "none";
-      clonedCard.style.background = "#ffffff";
+      clonedCard.style.background = "linear-gradient(155deg, #ffd6a4, #ffc2dd 42%, #badcff)";
       clonedCard.style.color = "#1f1b38";
       clonedCard.style.boxShadow = "none";
       clonedCard.querySelectorAll("*").forEach((node) => {
@@ -368,7 +368,7 @@ async function downloadCard() {
   link.download = `pet-mbti-${state.petResult.type}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
-  shareStatus.textContent = "图片已下载（白底增强可读性）。";
+  shareStatus.textContent = "Image downloaded with enhanced readability.";
 }
 
 function attachModalEvents() {
