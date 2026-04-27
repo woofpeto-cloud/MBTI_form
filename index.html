@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pet Personality MBTI Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="top-nav">
+      <a class="brand-link" href="https://woofpeto.com/" target="_blank" rel="noopener noreferrer">Woofpeto</a>
+    </header>
+
+    <main class="app-shell">
+      <section class="card quiz-card" id="app"></section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="footer-title">Woofpeto ©</p>
+      <p class="footer-tag">Helping you understand your pet better</p>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="https://woofpeto.com/" target="_blank" rel="noopener noreferrer">Home</a>
+        <a href="https://woofpeto.com/" target="_blank" rel="noopener noreferrer">Shop</a>
+        <a href="https://woofpeto.com/pages/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+      </nav>
+    </footer>
+
+    <section class="share-modal" id="shareModal" aria-hidden="true">
+      <div class="modal-overlay" id="closeModalOverlay"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+        <button class="modal-close" id="closeShareModal" aria-label="Close share options">×</button>
+        <h3 id="shareTitle">Save & Share Your Result</h3>
+        <p class="modal-sub">Pick one option below to show off your pet type.</p>
+
+        <div class="modal-actions">
+          <button class="primary-btn" id="downloadImageBtn">Download Image (PNG)</button>
+          <button class="secondary-btn" id="nativeShareBtn">Share Natively</button>
+        </div>
+
+        <div class="social-grid">
+          <button class="social-btn" data-platform="instagram">Instagram Story</button>
+          <button class="social-btn" data-platform="facebook">Facebook Share</button>
+          <button class="social-btn" data-platform="twitter">Twitter / X</button>
+          <button class="social-btn" data-platform="tiktok">TikTok Tips</button>
+        </div>
+
+        <p class="share-status" id="shareStatus"></p>
+      </div>
+    </section>
+
+    <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  </body>
+</html>
