@@ -295,21 +295,9 @@ function closeShareModal() {
   shareModal.setAttribute("aria-hidden", "true");
 }
 
-async function nativeShare() {
-  const text = getShareText();
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: "Pet Personality MBTI Quiz", text });
-      shareStatus.textContent = "Shared successfully!";
-      return;
-    } catch {
-      shareStatus.textContent = "Share canceled. You can still copy and post below.";
-      return;
-    }
-  }
-
-  await copyShareText(text);
-  shareStatus.textContent = "Native share unavailable. Text copied — paste it in your app.";
+async function copyCaption() {
+  const copied = await copyShareText(getShareText());
+  shareStatus.textContent = copied ? "文案已复制，可直接粘贴到社媒。" : "复制失败，请手动复制。";
 }
 
 async function copyShareText(text = getShareText()) {
@@ -337,14 +325,16 @@ function openSocial(platform) {
   }
 
   if (platform === "instagram") {
+    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
     copyShareText().then(() => {
-      shareStatus.textContent = "文案已复制！请打开 Instagram Story 并上传刚保存的图片。";
+      shareStatus.textContent = "已跳转 Instagram，并复制文案。请选择 Story/动态并上传图片。";
     });
     return;
   }
 
+  window.open("https://www.tiktok.com/", "_blank", "noopener,noreferrer");
   copyShareText().then(() => {
-    shareStatus.textContent = "文案已复制！请在 TikTok 发布时配上已保存图片。";
+    shareStatus.textContent = "已跳转 TikTok，并复制文案。请发布时粘贴文案并上传图片。";
   });
 }
 
@@ -358,6 +348,20 @@ async function downloadCard() {
   const canvas = await window.html2canvas(card, {
     scale: 2,
     backgroundColor: "#ffffff",
+    onclone: (doc) => {
+      const clonedCard = doc.getElementById("resultCard");
+      if (!clonedCard) return;
+      clonedCard.classList.remove("fade-in");
+      clonedCard.style.opacity = "1";
+      clonedCard.style.transform = "none";
+      clonedCard.style.background = "#ffffff";
+      clonedCard.style.color = "#1f1b38";
+      clonedCard.style.boxShadow = "none";
+      clonedCard.querySelectorAll("*").forEach((node) => {
+        node.style.opacity = "1";
+        node.style.color = "#1f1b38";
+      });
+    },
   });
 
   const link = document.createElement("a");
@@ -371,7 +375,7 @@ function attachModalEvents() {
   document.getElementById("closeShareModal").addEventListener("click", closeShareModal);
   document.getElementById("closeModalOverlay").addEventListener("click", closeShareModal);
   document.getElementById("downloadImageBtn").addEventListener("click", downloadCard);
-  document.getElementById("nativeShareBtn").addEventListener("click", nativeShare);
+  document.getElementById("copyCaptionBtn").addEventListener("click", copyCaption);
   document.querySelectorAll(".social-btn").forEach((btn) => {
     btn.addEventListener("click", () => openSocial(btn.dataset.platform));
   });
