@@ -324,32 +324,27 @@ function openSocial(platform) {
   const text = encodeURIComponent(getShareText());
   const pageUrl = encodeURIComponent("https://woofpeto.com/");
 
-  if (navigator.share) {
-    nativeShare();
-    return;
-  }
-
   if (platform === "facebook") {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}&quote=${text}`, "_blank", "noopener,noreferrer");
-    shareStatus.textContent = "Facebook share opened.";
+    shareStatus.textContent = "Facebook 网页分享已打开。";
     return;
   }
 
   if (platform === "twitter") {
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${pageUrl}`, "_blank", "noopener,noreferrer");
-    shareStatus.textContent = "Twitter/X share opened.";
+    shareStatus.textContent = "Twitter/X 网页分享已打开。";
     return;
   }
 
   if (platform === "instagram") {
     copyShareText().then(() => {
-      shareStatus.textContent = "Caption copied! Open Instagram → Story, then upload your saved image.";
+      shareStatus.textContent = "文案已复制！请打开 Instagram Story 并上传刚保存的图片。";
     });
     return;
   }
 
   copyShareText().then(() => {
-    shareStatus.textContent = "Text copied! Post with your saved image on TikTok.";
+    shareStatus.textContent = "文案已复制！请在 TikTok 发布时配上已保存图片。";
   });
 }
 
@@ -362,14 +357,14 @@ async function downloadCard() {
 
   const canvas = await window.html2canvas(card, {
     scale: 2,
-    backgroundColor: null,
+    backgroundColor: "#ffffff",
   });
 
   const link = document.createElement("a");
   link.download = `pet-mbti-${state.petResult.type}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
-  shareStatus.textContent = "Image downloaded!";
+  shareStatus.textContent = "图片已下载（白底增强可读性）。";
 }
 
 function attachModalEvents() {
