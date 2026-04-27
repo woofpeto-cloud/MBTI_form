@@ -108,10 +108,8 @@ function renderQuestion(mode) {
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${((progressDone + 1) / 12) * 100}%"></div></div>
     </div>
-
     <h1 class="title fade-in">Q${globalIndex + 1}. ${list[questionIndex]}</h1>
     <p class="subtitle fade-in">Pick the option that feels most accurate.</p>
-
     <div class="answers fade-in">
       <button class="answer-btn" data-answer="A"><span class="answer-label">A.</span>${choices[globalIndex][0]}</button>
       <button class="answer-btn" data-answer="B"><span class="answer-label">B.</span>${choices[globalIndex][1]}</button>
@@ -121,7 +119,6 @@ function renderQuestion(mode) {
   app.querySelectorAll(".answer-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const answer = btn.dataset.answer;
-
       if (isPet) {
         state.petAnswers[questionIndex] = answer;
         if (questionIndex < 7) {
@@ -140,7 +137,6 @@ function renderQuestion(mode) {
           state.step = "matchResult";
         }
       }
-
       render();
     });
   });
@@ -156,35 +152,31 @@ function calculatePetResult(answers) {
   };
 
   const axisByQuestion = ["social", "energy", "emotion", "bond", "social", "energy", "emotion", "bond"];
-
   answers.forEach((ans, index) => {
     score[axisByQuestion[index]][ans] += weights[index];
   });
 
   const type = dimensionMap
-    .map((d) => (score[d.axis].A >= score[d.axis].B ? d.letterA : d.letterB))
+    .map((dimension) =>
+      score[dimension.axis].A >= score[dimension.axis].B ? dimension.letterA : dimension.letterB
+    )
     .join("");
 
   return {
     type,
     typeName: typeNames[type] || "The One-of-a-Kind Companion",
     description: buildDescription(type),
-    traits: [
-      traitText.q5[answers[4]],
-      traitText.q6[answers[5]],
-      traitText.q7[answers[6]],
-      traitText.q8[answers[7]],
-    ],
+    traits: [traitText.q5[answers[4]], traitText.q6[answers[5]], traitText.q7[answers[6]], traitText.q8[answers[7]]],
   };
 }
 
 function buildDescription(type) {
-  const [s, e, em, b] = type.split("");
-  return `Your pet is ${s === "S" ? "outgoing" : "reserved"}, ${
-    e === "A" ? "energetic" : "calm"
-  }, ${em === "B" ? "emotionally steady" : "sensitive"}, and ${
-    b === "L" ? "deeply attached" : "independent"
-  }.`;
+  const [social, energy, emotion, bond] = type.split("");
+  const socialText = social === "S" ? "outgoing" : "reserved";
+  const energyText = energy === "A" ? "energetic" : "calm";
+  const emotionText = emotion === "B" ? "emotionally steady" : "sensitive";
+  const bondText = bond === "L" ? "deeply attached" : "happily independent";
+  return `Your pet is ${socialText}, ${energyText}, ${emotionText}, and ${bondText}. They bring a unique rhythm to your home, and their personality shines brightest when their daily routine matches their natural instincts.`;
 }
 
 function renderPetResult() {
@@ -196,14 +188,10 @@ function renderPetResult() {
       <h1 class="type-code">${type}</h1>
       <h2 class="type-name">${typeName}</h2>
     </div>
-
     <p class="desc fade-in">${description}</p>
-
-    <ul class="traits fade-in">
-      ${traits.map((t) => `<li>${t}</li>`).join("")}
-    </ul>
-
+    <ul class="traits fade-in">${traits.map((trait) => `<li>${trait}</li>`).join("")}</ul>
     <div class="cta-box fade-in">
+      <p>Want to see how well you match with your pet?</p>
       <button class="primary-btn" id="startCompatibility">👉 Test Compatibility</button>
     </div>
   `;
@@ -224,89 +212,194 @@ function calculateOwnerType(answers) {
   };
 
   return dimensionMap
-    .map((d) => (normalized[d.axis] === "A" ? d.letterA : d.letterB))
+    .map((dimension) => (normalized[dimension.axis] === "A" ? dimension.letterA : dimension.letterB))
     .join("");
 }
 
 function calculateMatch(petType, ownerType) {
-  const matches = petType.split("").filter((c, i) => c === ownerType[i]).length;
+  const matches = petType.split("").filter((letter, idx) => letter === ownerType[idx]).length;
   const score = matches * 25;
 
   let label = "Funny Combo 😅";
-  let summary = "Different styles, fun dynamics.";
+  let summary = "You and your pet are different in fun ways, which can make everyday life entertaining and full of surprises.";
 
   if (score >= 90) {
     label = "Soulmate 💕";
-    summary = "Perfect emotional alignment.";
+    summary = "You and your pet are on nearly the same wavelength. Daily habits and emotional rhythm feel naturally aligned.";
   } else if (score >= 75) {
     label = "Strong Match 💛";
-    summary = "Great natural synergy.";
+    summary = "You sync well on most dimensions and likely build trust fast. A little flexibility makes this pairing shine even more.";
+  } else if (score >= 60) {
+    label = "Balanced 💫";
+    summary = "You have both similarities and differences, which can create a healthy balance. Understanding each other’s style is the secret.";
   }
 
   return { score, label, summary };
 }
 
 function renderMatchResult() {
+  const randomLine = viralLines[Math.floor(Math.random() * viralLines.length)];
+  const traitLine = state.petResult.traits[Math.floor(Math.random() * state.petResult.traits.length)];
+
   app.innerHTML = `
     <div class="result-header fade-in">
-      <h1>${state.petResult.type} × ${state.ownerType}</h1>
-      <p>${state.match.label}</p>
+      <p class="subtitle">Compatibility Result</p>
+      <h1 class="title">${state.petResult.type} × ${state.ownerType}</h1>
+      <p class="type-name">${state.match.label}</p>
     </div>
 
-    <div class="match-score">${state.match.score}%</div>
+    <div class="match-score bounce">${state.match.score}%</div>
+
+    <p class="desc">Pet Type: <strong>${state.petResult.type}</strong><br/>Owner Type: <strong>${state.ownerType}</strong></p>
+    <p class="desc">${state.match.summary}</p>
 
     <article class="result-card fade-in" id="resultCard">
       <h4>Pet Personality MBTI</h4>
-      <p>${state.petResult.type}</p>
-      <p>${state.petResult.typeName}</p>
+      <p class="card-type">${state.petResult.type}</p>
+      <p><strong>${state.petResult.typeName}</strong></p>
+      <p>You + Your Pet = <strong>${state.match.score}% Match ${state.match.score > 89 ? "💕" : "💛"}</strong></p>
+      <p>${state.petResult.description.split(".")[0]}.</p>
+      <p>${traitLine}</p>
+      <p><strong>What's your pet's type?</strong></p>
     </article>
 
-    <button class="primary-btn" id="saveShareBtn">Save & Share</button>
+    <p class="mini-copy">${randomLine}</p>
+
+    <div class="actions">
+      <button class="primary-btn" id="saveShareBtn">Save & Share Result</button>
+      <button class="secondary-btn" id="shopBtn">👉 Explore Woofpeto Collection</button>
+    </div>
+    <p class="sub-action">Find products matched to your pet’s personality</p>
   `;
 
+  if (state.match.score > 90) burstConfetti();
+
   document.getElementById("saveShareBtn").addEventListener("click", openShareModal);
+  document.getElementById("shopBtn").addEventListener("click", () => {
+    window.open("https://woofpeto.com/", "_blank", "noopener,noreferrer");
+  });
 }
 
 function getShareText() {
-  return `My pet type is ${state.petResult.type} (${state.petResult.typeName})!`;
+  return `My pet type is ${state.petResult.type} (${state.petResult.typeName}) and our compatibility is ${state.match.score}%!`;
 }
 
 function openShareModal() {
+  shareStatus.textContent = "";
   shareModal.classList.add("is-open");
+  shareModal.setAttribute("aria-hidden", "false");
 }
 
-function downloadCard() {
-  const card = document.getElementById("resultCard");
+function closeShareModal() {
+  shareModal.classList.remove("is-open");
+  shareModal.setAttribute("aria-hidden", "true");
+}
 
-  return window.html2canvas(card, {
-    scale: 2,
-    backgroundColor: "#ffffff",
-    useCORS: true,
-  }).then((canvas) => {
-    const link = document.createElement("a");
-    link.download = `pet-${state.petResult.type}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  });
+async function nativeShare() {
+  const text = getShareText();
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Pet Personality MBTI Quiz", text });
+      shareStatus.textContent = "Shared successfully!";
+      return;
+    } catch {
+      shareStatus.textContent = "Share canceled. You can still copy and post below.";
+      return;
+    }
+  }
+
+  await copyShareText(text);
+  shareStatus.textContent = "Native share unavailable. Text copied — paste it in your app.";
+}
+
+async function copyShareText(text = getShareText()) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  return false;
 }
 
 function openSocial(platform) {
   const text = encodeURIComponent(getShareText());
-  const url = encodeURIComponent("https://woofpeto.com/");
+  const pageUrl = encodeURIComponent("https://woofpeto.com/");
+
+  if (navigator.share) {
+    nativeShare();
+    return;
+  }
 
   if (platform === "facebook") {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}&quote=${text}`, "_blank", "noopener,noreferrer");
+    shareStatus.textContent = "Facebook share opened.";
+    return;
   }
 
   if (platform === "twitter") {
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${pageUrl}`, "_blank", "noopener,noreferrer");
+    shareStatus.textContent = "Twitter/X share opened.";
+    return;
   }
 
   if (platform === "instagram") {
-    downloadCard().then(() => {
-      shareStatus.textContent = "Image downloaded. Upload to Instagram Story.";
+    copyShareText().then(() => {
+      shareStatus.textContent = "Caption copied! Open Instagram → Story, then upload your saved image.";
     });
+    return;
   }
+
+  copyShareText().then(() => {
+    shareStatus.textContent = "Text copied! Post with your saved image on TikTok.";
+  });
 }
 
+async function downloadCard() {
+  const card = document.getElementById("resultCard");
+  if (!card || !window.html2canvas) {
+    shareStatus.textContent = "Download unavailable. Please try again.";
+    return;
+  }
+
+  const canvas = await window.html2canvas(card, {
+    scale: 2,
+    backgroundColor: null,
+  });
+
+  const link = document.createElement("a");
+  link.download = `pet-mbti-${state.petResult.type}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+  shareStatus.textContent = "Image downloaded!";
+}
+
+function attachModalEvents() {
+  document.getElementById("closeShareModal").addEventListener("click", closeShareModal);
+  document.getElementById("closeModalOverlay").addEventListener("click", closeShareModal);
+  document.getElementById("downloadImageBtn").addEventListener("click", downloadCard);
+  document.getElementById("nativeShareBtn").addEventListener("click", nativeShare);
+  document.querySelectorAll(".social-btn").forEach((btn) => {
+    btn.addEventListener("click", () => openSocial(btn.dataset.platform));
+  });
+}
+
+function burstConfetti() {
+  confettiLayer.innerHTML = "";
+  const colors = ["#ff6b9d", "#7e7bff", "#54d1db", "#ffd166", "#06d6a0"];
+
+  for (let i = 0; i < 80; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+    piece.style.left = `${Math.random() * 100}vw`;
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.setProperty("--x", `${Math.random() * 120 - 60}px`);
+    piece.style.animationDelay = `${Math.random() * 0.35}s`;
+    confettiLayer.appendChild(piece);
+  }
+
+  setTimeout(() => {
+    confettiLayer.innerHTML = "";
+  }, 2100);
+}
+
+attachModalEvents();
 render();
